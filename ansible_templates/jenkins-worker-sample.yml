@@ -1,0 +1,13 @@
+---
+- hosts:
+    with_items:
+      - "{{ passed_in_hosts }}"
+  become: 'yes'
+  remote_user: ec2-user
+  become_user: root
+  tasks:
+    - name: 'Install jq, JSOn Parser'
+      yum:
+        name: jq
+        state: present
+
