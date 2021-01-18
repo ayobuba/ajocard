@@ -1,0 +1,15 @@
+# Compiled files
+*.tfstate
+*.tfstate.backup
+
+# Module directory
+.terraform/
+
+# tfvars files
+*.tfvars
+
+.idea
+
+oldgo/*
+
+nodejs_app/node_modules/*
