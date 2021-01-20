@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="eks plan" type="#org.intellij.plugins.hcl.terraform.run.TerraformConfigurationType" factoryName="Terraform Plan" show_console_on_std_err="false" show_console_on_std_out="false">
+  <configuration default="false" name="gke plan" type="#org.intellij.plugins.hcl.terraform.run.TerraformConfigurationType" factoryName="Terraform Plan" show_console_on_std_err="false" show_console_on_std_out="false">
     <option name="allowRunningInParallel" value="false" />
     <option name="envs">
       <map />
@@ -9,9 +9,9 @@
     <option name="selectedOptions">
       <list />
     </option>
-    <option name="workingDirectory" value="$PROJECT_DIR$/tf_eks_cluster" />
+    <option name="workingDirectory" value="$PROJECT_DIR$/tf_gke_cluster" />
     <option name="PROGRAM_PARAMETERS" value="plan" />
-    <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$/tf_eks_cluster" />
+    <option name="WORKING_DIRECTORY" value="file://$PROJECT_DIR$/tf_gke_cluster" />
     <option name="PASS_PARENT_ENVS" value="true" />
     <method v="2" />
   </configuration>

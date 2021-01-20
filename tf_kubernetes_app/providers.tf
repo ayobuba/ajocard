@@ -1,14 +1,15 @@
+
 provider "aws" {
-  region = var.aws_region
+  region = var.region
   access_key = var.access_key
   secret_key = var.secret_key
 }
 
 provider "kubernetes" {
-  load_config_file       = "false"
-  host                   = var.cluster_endpoint
-  token                  = var.cluster_token
-  cluster_ca_certificate = base64decode(var.cluster_ca_cert)
+//  load_config_file       = "false"
+//  host                   = var.cluster_endpoint
+//  token                  = var.cluster_token
+//  cluster_ca_certificate = base64decode(var.cluster_ca_cert)
 }
 
 
@@ -24,15 +25,15 @@ terraform {
   }
 }
 
-terraform {
-  required_providers {
-    aws = {
-      source = "hashicorp/aws"
-      version = "~> 3.20"
-    }
-  }
-}
-
+//terraform {
+//  required_providers {
+//    aws = {
+//      source = "hashicorp/aws"
+//      version = "~> 3.20"
+//    }
+//  }
+//}
+//
 
 
 

@@ -1,0 +1,3 @@
+docker build -t ariv3ra/terraform-gcp -t ariv3ra/terraform-gcp:alpine -t ariv3ra/terraform-gcp:tf-v0.13.4 .
+echo $DOCKER_PWD | docker login -u $DOCKER_LOGIN --password-stdin
+docker push ariv3ra/terraform-gcp

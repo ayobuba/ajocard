@@ -34,20 +34,20 @@ Challenge equirements
 
 1. Put together two basic HTTP applications - one in Go, and one in NodeJS.
 
-    - Keep them as simple as possible, e.g responding "Hi!" to every request is sufficient.
-    - Use any HTTP libraries you want, e.g http/net for Go, Fastify for NodeJS.
-    - To simulate long-lived connections, you may want to put a random `sleep` in there.
-    - This is basically just the setup for the challenge - write as little code as possible :)
+   - Keep them as simple as possible, e.g responding "Hi!" to every request is sufficient.
+   - Use any HTTP libraries you want, e.g http/net for Go, Fastify for NodeJS.
+   - To simulate long-lived connections, you may want to put a random `sleep` in there.
+   - This is basically just the setup for the challenge - write as little code as possible :)
 
 2. Setup a deployment pipeline and deployment script(s) for the apps.
 
-    - You will need to deploy your project using Docker/Kubernetes. Please provide a README along with the link to your project
-    - You will also need to provide the manifests for deploying the server onto a Kubernetes cluster. (e.g. deployment, service, ingress).
-    - You can use Bitbucket Pipelines, Gitlab CI, Github Actions or any other tool you are comfortable with.
-    - It should be invoked with something like `./deploy-apps go-app node-app`
-    - It should be able to deploy one or multiple apps
-    - It ahould install all required app dependencies are installed on the target container.
-    - When deploying a new app version, open connections to the old server version must not be interrupted
+   - You will need to deploy your project using Docker/Kubernetes. Please provide a README along with the link to your project
+   - You will also need to provide the manifests for deploying the server onto a Kubernetes cluster. (e.g. deployment, service, ingress).
+   - You can use Bitbucket Pipelines, Gitlab CI, Github Actions or any other tool you are comfortable with.
+   - It should be invoked with something like `./deploy-apps go-app node-app`
+   - It should be able to deploy one or multiple apps
+   - It ahould install all required app dependencies are installed on the target container.
+   - When deploying a new app version, open connections to the old server version must not be interrupted
 
 
 Follow-up questions
@@ -68,6 +68,9 @@ Our goal is to get a sense how deep and broad your understand of systems like ou
 5. How do you feel about being point person and in-house expert on compliance? (PCI, etc.)
 
 
-Tasks left
-create buildpackage circleci for go
-create buildpackage circleci for node.js
+**Follow these instructions to submit your challenge.**
+- Write your code on a separate branch on a private Github repository
+- Commit your changes
+- Issue a Pull Request
+- Invite us (Github: "ajocardeng") as a collaborator to your repository.
+- Respond to the follow-up via the email thread that you received this challenge.
