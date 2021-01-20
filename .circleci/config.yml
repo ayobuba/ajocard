@@ -11,10 +11,10 @@ jobs:
           name: Build Docker image
           command: |
             export TAG=0.2.<< pipeline.number >>
-            export IMAGE_NAME=$( echo "$CIRCLE_PROJECT_REPONAME" | tr -s  '[:upper:]'  '[:lower:]' )
-            docker build -t $DOCKER_LOGIN/$IMAGE_NAME -t $DOCKER_LOGIN/$IMAGE_NAME:$TAG .
-            echo $DOCKER_PWD | docker login -u $DOCKER_LOGIN --password-stdin
-            docker push $DOCKER_LOGIN/$IMAGE_NAME
+#             export IMAGE_NAME=$( echo "$CIRCLE_PROJECT_REPONAME" | tr -s  '[:upper:]'  '[:lower:]' )
+            docker build -t ayobuba/ajocard -t $ayobuba/ajocard:$TAG .
+            echo $DOCKER_PWD | docker login -u $ayobuba --password-stdin
+            docker push $ayobuba/ajocard
   gke_create_cluster:
     docker:
       - image: ayobuba/gcp_tf_docker:latest
@@ -44,7 +44,7 @@ jobs:
           command: |
             export CLUSTER_NAME="ajoke-challenge"
             export TAG=0.2.<< pipeline.number >>
-            export DOCKER_IMAGE="docker-image=${DOCKER_LOGIN}/${CIRCLE_PROJECT_REPONAME}:$TAG"
+            export DOCKER_IMAGE="docker-image=ayobuba/${CIRCLE_PROJECT_REPONAME}:$TAG"
             echo $TF_CLOUD_TOKEN | base64 -d > $HOME/.terraformrc
             echo $GOOGLE_CLOUD_KEYS | base64 -d > $HOME/gcloud_keys
             gcloud auth activate-service-account --key-file ${HOME}/gcloud_keys
