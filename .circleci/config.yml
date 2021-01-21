@@ -12,7 +12,7 @@ jobs:
           command: |
             cd docker_apps/node
             export TAG=0.2.<< pipeline.number >>
-            export NODE_IMAGE_NAME="ajocard-circleci-node"
+            export NODE_IMAGE_NAME=$CIRCLE_PROJECT_REPONAME
             docker build -t $DOCKER_LOGIN/$NODE_IMAGE_NAME -t $DOCKER_LOGIN/$NODE_IMAGE_NAME:$TAG .
             echo $DOCKER_PWD | docker login -u $DOCKER_LOGIN --password-stdin
             docker push $DOCKER_LOGIN/$NODE_IMAGE_NAME
@@ -28,11 +28,10 @@ jobs:
             command: |
               cd docker_apps/go_app
               export TAG=0.2.<< pipeline.number >>
-              export GO_IMAGE_NAME="ajocard-circleci-go"
-              export NODE_IMAGE_NAME="ajocard-circleci-node"
+              export GO_IMAGE_NAME=$CIRCLE_PROJECT_REPONAME
               docker build -t $DOCKER_LOGIN/$GO_IMAGE_NAME -t $DOCKER_LOGIN/$GO_IMAGE_NAME:$TAG .
               echo $DOCKER_PWD | docker login -u $DOCKER_LOGIN --password-stdin
-              docker push $DOCKER_LOGIN/$NODE_IMAGE_NAME
+              docker push $DOCKER_LOGIN/$GO_IMAGE_NAME
   gke_create_cluster:
     docker:
       - image: ayobuba/gcp_tf_docker:latest
