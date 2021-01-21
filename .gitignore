@@ -1,4 +1,4 @@
-.idea
+.idea/*
 oldgo/*
 tf_eks_cluster/.terraform.lock.hcl
 tf_eks_cluster/.terraform/*terraform.auto.tfvars

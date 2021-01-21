@@ -13,12 +13,14 @@ $  ./go-docker
 
 Server can be accessed using curl
 ```shell
-$curl --request GET -sL \
+$ curl --request GET -sL \
      --url 'http://localhost:8083'
 Hello, Guest
 ```
+
 ```shell
-$ curl http://localhost:8083?name=Shekarau
+$ curl --request GET -sL \
+     --url 'http://localhost:8083?name=Shekarau'
 Hello, Shekarau
 ```
 
@@ -31,10 +33,3 @@ You can run the Docker image by running
 ```shell
 $ docker run -d -p 8083:8083 go-docker
 ```
-
-Image -  b6d10ab97686
-go-docker:latest
-
-resources
-https://www.callicoder.com/docker-golang-image-container-example/
-https://ropenscilabs.github.io/r-docker-tutorial/04-Dockerhub.html

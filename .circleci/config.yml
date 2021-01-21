@@ -1,20 +1,37 @@
 version: 2.1
 jobs:
-  build_docker_image:
+  build_node_docker_image:
     docker:
       - image: circleci/node:12
     steps:
       - checkout
       - setup_remote_docker:
-          docker_layer_caching: false
+          docker_layer_caching: true
       - run:
-          name: Build Docker image
+          name: Build Node.js Docker image
           command: |
+            cd docker_apps/node
             export TAG=0.2.<< pipeline.number >>
-            export IMAGE_NAME=$CIRCLE_PROJECT_REPONAME
+            export IMAGE_NAME="ajocardnode"
             docker build -t $DOCKER_LOGIN/$IMAGE_NAME -t $DOCKER_LOGIN/$IMAGE_NAME:$TAG .
             echo $DOCKER_PWD | docker login -u $DOCKER_LOGIN --password-stdin
             docker push $DOCKER_LOGIN/$IMAGE_NAME
+  build_go_docker_image:
+      docker:
+        - image: circleci/golang:latest
+      steps:
+        - checkout
+        - setup_remote_docker:
+            docker_layer_caching: true
+        - run:
+            name: Build Goland Docker image
+            command: |
+              cd docker_apps/go_app
+              export TAG=0.2.<< pipeline.number >>
+              export IMAGE_NAME="ajocardgo"
+              docker build -t $DOCKER_LOGIN/$IMAGE_NAME -t $DOCKER_LOGIN/$IMAGE_NAME:$TAG .
+              echo $DOCKER_PWD | docker login -u $DOCKER_LOGIN --password-stdin
+              docker push $DOCKER_LOGIN/$IMAGE_NAME
   gke_create_cluster:
     docker:
       - image: ayobuba/gcp_tf_docker:latest
@@ -25,7 +42,6 @@ jobs:
       - run:
           name: Create GKE Cluster
           command: |
-            cat <file> | base64 -w 0
             echo $TF_CLOUD_TOKEN | base64 -d > $HOME/.terraformrc
             echo $GOOGLE_CLOUD_KEYS | base64 -d > $HOME/gcloud_keys
             gcloud auth activate-service-account --key-file ${HOME}/gcloud_keys
@@ -87,11 +103,13 @@ jobs:
 workflows:
   build_test:
     jobs:
-      - build_docker_image
+      - build_node_docker_image
+      - build_go_docker_image
       - gke_create_cluster
       - gke_deploy_app:
           requires:
-            - build_docker_image
+            - build_node_docker_image
+            - build_go_docker_image
             - gke_create_cluster
       - approve-destroy:
           type: approval

@@ -1,11 +1,18 @@
 variable "cluster" {
   default = "ajocard-cluster"
 }
-variable "app" {
+variable "node_app" {
   type        = string
   description = "Name of application"
-  default     = "ajocard-devops"
+  default     = "node"
 }
+
+variable "go_app" {
+  type        = string
+  description = "Name of application"
+  default     = "go"
+}
+
 variable "zone" {
   default = "us-east1-d"
 }

@@ -1,5 +1,5 @@
-variable "project" {
-  default = "ajocard-challenge"
+variable "project_id" {
+  default = "devops-challenge-302120"
 }
 
 variable "region" {

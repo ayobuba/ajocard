@@ -24,7 +24,7 @@ $ docker-compose stop
 Hiting the 3000 port endpoint will return a "helloworld"
 ```shell
 $ curl --request GET -sL \
-     --url 'http://localhost:3000'
+     --url 'http://localhost:5000'
    
 ```
 

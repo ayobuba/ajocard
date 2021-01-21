@@ -43,7 +43,7 @@ resource "null_resource" "gke_cluster_credentials" {
 
   provisioner "local-exec" {
     //command = "echo ${google_container_cluster.primary.name} >> private_ips.txt"
-    command = "gcloud container clusters get-credentials ${google_container_cluster.primary.name} --zone=${var.zone}"
+    command = "gcloud container clusters get-credentials ${google_container_cluster.primary.name} --zone=${var.zone} > gke_credentials.txt"
   }
   depends_on = [google_container_cluster.primary]
 }

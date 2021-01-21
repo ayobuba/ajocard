@@ -1,8 +1,9 @@
-resource "kubernetes_deployment" "app" {
+# node app deployment manifest
+resource "kubernetes_deployment" "node_app" {
   metadata {
-    name = var.app
+    name = var.node_app
     labels = {
-      app = var.app
+      app = var.node_app
     }
   }
 
@@ -11,21 +12,21 @@ resource "kubernetes_deployment" "app" {
 
     selector {
       match_labels = {
-        app = var.app
+        app = var.node_app
       }
     }
 
     template {
       metadata {
         labels = {
-          app = var.app
+          app = var.node_app
         }
       }
 
       spec {
         container {
           image = var.docker-image-node
-          name  = var.app
+          name  = var.node_app
           port {
             name           = "port-5000"
             container_port = 5000
@@ -36,19 +37,41 @@ resource "kubernetes_deployment" "app" {
   }
 }
 
-resource "kubernetes_service" "app" {
+# go app deployment manifest
+resource "kubernetes_deployment" "go_app" {
   metadata {
-    name = var.app
-  }
-  spec {
-    selector = {
-      app = kubernetes_deployment.app.metadata.0.labels.app
+    name = var.go_app
+    labels = {
+      app = var.go_app
     }
-    port {
-      port        = 80
-      target_port = 5000
+  }
+
+  spec {
+    replicas = 3
+
+    selector {
+      match_labels = {
+        app = var.go_app
+      }
     }
 
-    type = "LoadBalancer"
+    template {
+      metadata {
+        labels = {
+          app = var.go_app
+        }
+      }
+
+      spec {
+        container {
+          image = var.docker-image-go
+          name  = var.go_app
+          port {
+            name           = "port-8083"
+            container_port = 8083
+          }
+        }
+      }
+    }
   }
 }
