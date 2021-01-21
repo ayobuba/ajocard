@@ -1,6 +1,6 @@
 version: 2.1
 jobs:
-  build_node_docker_image:
+  build_docker_image:
     docker:
       - image: circleci/node:12
       - image: circleci/golang:latest
