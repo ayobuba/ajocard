@@ -11,11 +11,12 @@ jobs:
       - run:
           name: Build Docker image
           command: |
+            cd docker
             export TAG=0.2.<< pipeline.number >>
             export GO_IMAGE_NAME="ajocard-circleci-go"
             export NODE_IMAGE_NAME="ajocard-circleci-node"
-            docker build -t $DOCKER_LOGIN/$NODE_IMAGE_NAME -t $DOCKER_LOGIN/$GO_IMAGE_NAME:$TAG --target go-image .
-            docker build -t $DOCKER_LOGIN/$GO_IMAGE_NAME -t $DOCKER_LOGIN/$GO_IMAGE_NAME:$TAG --target node-image .
+            docker build -t $DOCKER_LOGIN/$NODE_IMAGE_NAME -t $DOCKER_LOGIN/$GO_IMAGE_NAME:$TAG --target go-image ..
+            docker build -t $DOCKER_LOGIN/$GO_IMAGE_NAME -t $DOCKER_LOGIN/$GO_IMAGE_NAME:$TAG --target node-image ..
             echo $DOCKER_PWD | docker login -u $DOCKER_LOGIN --password-stdin
             docker push $DOCKER_LOGIN/$IMAGE_NAME
   gke_create_cluster:
