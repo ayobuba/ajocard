@@ -5,6 +5,6 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm install --only=production
 COPY ["app.js", "package.json", "./"]
-COPY test views ./
+COPY views ./
 EXPOSE 5000
 CMD [ "npm", "start" ]
