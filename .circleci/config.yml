@@ -27,7 +27,7 @@ jobs:
             name: Build GO Docker image
             command: |
               cd docker_apps/go_app
-              export TAG=0.2.<< pipeline.number >>
+              export TAG=0.3.<< pipeline.number >>
               export GO_IMAGE_NAME=$CIRCLE_PROJECT_REPONAME
               docker build -t $DOCKER_LOGIN/$GO_IMAGE_NAME -t $DOCKER_LOGIN/$GO_IMAGE_NAME:$TAG .
               echo $DOCKER_PWD | docker login -u $DOCKER_LOGIN --password-stdin
