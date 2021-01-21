@@ -1,24 +1,38 @@
 version: 2.1
 jobs:
-  build_docker_image:
+  build_node_docker_image:
     docker:
       - image: circleci/node:12
-      - image: circleci/golang:latest
     steps:
       - checkout
       - setup_remote_docker:
           docker_layer_caching: false
       - run:
-          name: Build Docker image
+          name: Build Node Docker image
           command: |
-            cd docker
+            cd docker_apps/node
             export TAG=0.2.<< pipeline.number >>
-            export GO_IMAGE_NAME="ajocard-circleci-go"
             export NODE_IMAGE_NAME="ajocard-circleci-node"
-            docker build -t $DOCKER_LOGIN/$NODE_IMAGE_NAME -t $DOCKER_LOGIN/$GO_IMAGE_NAME:$TAG --target go-image .
-            docker build -t $DOCKER_LOGIN/$GO_IMAGE_NAME -t $DOCKER_LOGIN/$GO_IMAGE_NAME:$TAG --target node-image .
+            docker build -t $DOCKER_LOGIN/$NODE_IMAGE_NAME -t $DOCKER_LOGIN/$NODE_IMAGE_NAME:$TAG .
             echo $DOCKER_PWD | docker login -u $DOCKER_LOGIN --password-stdin
-            docker push $DOCKER_LOGIN/$IMAGE_NAME
+            docker push $DOCKER_LOGIN/$NODE_IMAGE_NAME
+  build_go_docker_image:
+      docker:
+        - image: circleci/golang:latest
+      steps:
+        - checkout
+        - setup_remote_docker:
+            docker_layer_caching: false
+        - run:
+            name: Build GO Docker image
+            command: |
+              cd docker_apps/go_app
+              export TAG=0.2.<< pipeline.number >>
+              export GO_IMAGE_NAME="ajocard-circleci-go"
+              export NODE_IMAGE_NAME="ajocard-circleci-node"
+              docker build -t $DOCKER_LOGIN/$GO_IMAGE_NAME -t $DOCKER_LOGIN/$GO_IMAGE_NAME:$TAG .
+              echo $DOCKER_PWD | docker login -u $DOCKER_LOGIN --password-stdin
+              docker push $DOCKER_LOGIN/$NODE_IMAGE_NAME
   gke_create_cluster:
     docker:
       - image: ayobuba/gcp_tf_docker:latest
@@ -90,11 +104,13 @@ jobs:
 workflows:
   build_test:
     jobs:
-      - build_docker_image
+      - build_node_docker_image
+      - build_go_docker_image
       - gke_create_cluster
       - gke_deploy_app:
           requires:
-            - build_docker_image
+            - build_node_docker_image
+            - build_go_docker_image
             - gke_create_cluster
       - approve-destroy:
           type: approval

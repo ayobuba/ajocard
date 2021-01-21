@@ -1,18 +1,12 @@
-FROM node:12
-
-# Create app directory
+# Node
+EXPOSE 5000
+CMD [ "npm", "start" ]
+FROM node:12 as node-image
+LABEL maintainer="Shekarau Edward Buba <shekarau.buba@outlook.com"
 WORKDIR /usr/src/app
-
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
 COPY package*.json ./
-
 RUN npm install --only=production
-# If you are building your code for production
-# RUN npm install --only=production
-
-# Bundle app source
-COPY ../.. .
-
+COPY ["app.js", "package.json", "./"]
+COPY test views ./
 EXPOSE 5000
 CMD [ "npm", "start" ]

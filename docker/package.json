@@ -10,16 +10,7 @@
     "start": "node app.js",
     "test": "mocha"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/punkdata/nodejs-circleci.git"
-  },
-  "author": "Angel Rivera",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/punkdata/nodejs-circleci/issues"
-  },
-  "homepage": "https://github.com/punkdata/nodejs-circleci.git#readme",
+  "homepage": "https://github.com/ayobuba/AjoCard.git#readme",
   "dependencies": {
     "ejs": "^2.6.1",
     "express": "^4.16.4",
