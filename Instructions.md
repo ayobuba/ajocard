@@ -57,16 +57,42 @@ Please take the time to write answers to these questions. Think through them dee
 
 Our goal is to get a sense how deep and broad your understand of systems like ours is, and how effectively you can communicate about them. Don't worry if you don't have all the answers off the top of your head: we're also very much looking for your ability to reason about these sorts of problems, and design/evaluate possible answers.
 
-1. InnoDB clusters data in its primary key B+Tree. As a result, "natural primary key" tables and "auto-increment primary key" tables have different characteristics. In a few words, how would you describe the differences? Also, give at least one examples of when you would use natural keys over auto-incrementing ones.
+1. InnoDB clusters data in its primary key B+Tree. As a result, "natural primary key" tables and "auto-increment primary key" tables have 
+   different characteristics. In a few words, how would you describe the differences? 
+   Also, give at least one examples of when you would use natural keys over auto-incrementing ones.
 
-2. We strive for virtually 0 downtime, but issues do happen. If/when disaster strikes we have to respond immediately. Please take the time to describe how you would structure downtime alerts and human response protocols at a company like AjoCard in order to sleep soundly at night.
+2. We strive for virtually 0 downtime, but issues do happen. If/when disaster strikes we have to respond immediately. 
+   Please take the time to describe how you would structure downtime alerts and human response protocols at a company like AjoCard in order 
+   to sleep soundly at night.
+   
+   I would utilize a cloud notification services like AWS SNS for Application to application(A2A) and application to person (A2P). A serverless 
+   function will probe the main application for Healthchecks failures and when a healthcheck fails, a notification can be sent to Human using A2P
+   and the same notification can also be sent to another function triggering url swap to a different availability zone where the application is also 
+   running like a Blue/Green Deployment.
+   
 
-3. Kubernetes managament can be seen to be daunting. We run our application workloads in Kubernetes environment(s). If/when a worker node(s) becomes unreachable or unavailable, we have to respond immediately.  Please take the time to describe how you would structure downtime alerts for Kubernetes nodes and how you would respond to prevent and /or maintain an objective of 0 downtime.
+3. Kubernetes managament can be seen to be daunting. We run our application workloads in Kubernetes environment(s). 
+   If/when a worker node(s) becomes unreachable or unavailable, we have to respond immediately.  
+   Please take the time to describe how you would structure downtime alerts for Kubernetes nodes and how you would respond to prevent 
+   and /or maintain an objective of 0 downtime.
+   
+   Depending on the cluster configuration, but in my opinion, the Launch Configuration and autoscaling group should take care of 
+   provisioning a new node . If the node consistently fails a health check, an email notification service like SES can be utilized 
+   to send notifications if node provisioning failures.
+   
 
-4. Logs can be fantastic, and logs can be a headache. We have applications written in multiple languages, with multiple versions of each running in parallel on multiple pods / containers that can be torn down and spun up at any time. In addition, PCI compliance requires long-lived access logs of all production services. How would you structure logging for this whole system?
+
+4. Logs can be fantastic, and logs can be a headache. We have applications written in multiple languages, 
+   with multiple versions of each running in parallel on multiple pods / containers that can be torn down and spun up at any time. 
+   In addition, PCI compliance requires long-lived access logs of all production services. 
+   How would you structure logging for this whole system?
+   
+I would provision a Prometheus server on the kubernetes cluster that will monitor  and show overall cluster filesystem usage,
+individual systemd services, pod, containers statistics. Grafana will be used for analytics . PromQL will be used to aggregate time series data 
+and stored in an S3 bucket.
 
 5. How do you feel about being point person and in-house expert on compliance? (PCI, etc.)
-
+   Its  a task I will know i will be competent in as long as i am deeply familiar with the inhouse compliance policies 
 
 **Follow these instructions to submit your challenge.**
 - Write your code on a separate branch on a private Github repository
