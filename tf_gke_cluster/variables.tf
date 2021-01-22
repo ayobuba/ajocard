@@ -15,7 +15,7 @@ variable "cluster" {
 }
 
 variable "credentials" {
-  default = "ajocard-challenge-c023e9bcd996.json"
+  default = "$GOOGLE_CLOUD_TOKEN"
 }
 
 variable "kubernetes_min_ver" {
