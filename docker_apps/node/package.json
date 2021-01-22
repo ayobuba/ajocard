@@ -4,7 +4,7 @@
   "description": "nodejs-circleci",
   "main": "app.js",
   "directories": {
-    "test": "../../docker/test"
+    "test": "../../.idea/docker/test"
   },
   "scripts": {
     "start": "node app.js",

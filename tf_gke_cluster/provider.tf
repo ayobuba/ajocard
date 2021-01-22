@@ -1,7 +1,7 @@
 provider "google" {
   # version     = "2.7.0"
-  credentials = file(var.credentials)
-  //credentials = file("/Users/ryu/IntelliJProjects/AjoCard/.idea/devops-challenge-302120-f95db89fda4a.json")
+  //credentials = file(var.credentials)
+  credentials = file("/Users/ryu/IntelliJProjects/AjoCard/.idea/devops-challenge-302120-f95db89fda4a.json")
   //credentials = file("~/.config/gcloud/application_default_credentials.json")
   project     = var.project_id
   region      = var.region
