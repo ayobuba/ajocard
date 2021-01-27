@@ -98,14 +98,14 @@ resource "aws_security_group" "worker_group_mgmt_one" {
     ]
   }
 
-  ingress {
-    from_port       = 0
-    protocol        = "-1"
-    to_port         = 0
-    security_groups = [aws_security_group.NodeSecurityGroup.id]
-    cidr_blocks     = ["0.0.0.0/0"]
-
-  }
+//  ingress {
+//    from_port       = 0
+//    protocol        = "-1"
+//    to_port         = 0
+//    security_groups = [aws_security_group.NodeSecurityGroup.id]
+//    cidr_blocks     = ["0.0.0.0/0"]
+//
+//  }
 }
 
 resource "aws_security_group" "worker_group_mgmt_two" {
@@ -121,14 +121,14 @@ resource "aws_security_group" "worker_group_mgmt_two" {
       "192.168.0.0/16",
     ]
   }
-  ingress {
-    from_port       = 0
-    protocol        = "-1"
-    to_port         = 0
-    security_groups = [aws_security_group.NodeSecurityGroup.id]
-    cidr_blocks     = ["0.0.0.0/0"]
-
-  }
+//  ingress {
+//    from_port       = 0
+//    protocol        = "-1"
+//    to_port         = 0
+//    security_groups = [aws_security_group.NodeSecurityGroup.id]
+//    cidr_blocks     = ["0.0.0.0/0"]
+//
+//  }
 }
 
 resource "aws_security_group" "all_worker_mgmt" {

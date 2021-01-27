@@ -39,9 +39,9 @@ output "region" {
   value = var.aws_region
 }
 
-output "lc-sg" {
-  value = aws_launch_configuration.NodeLaunchConfig.security_groups
-}
+//output "lc-sg" {
+//  value = aws_launch_configuration.NodeLaunchConfig.security_groups
+//}
 
 //output "subnet_cidr_blocks" {
 //  value = [for s in data.aws_subnet.example : s.cidr_block]

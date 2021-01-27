@@ -68,10 +68,11 @@ resource "kubernetes_deployment" "go_app" {
           name  = var.go_app
           port {
             name           = "port-8083"
-            container_port = 8083
+            container_port = 8084
           }
         }
       }
     }
   }
+  create_before_destroy = true
 }
