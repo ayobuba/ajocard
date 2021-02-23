@@ -38,41 +38,41 @@ resource "kubernetes_deployment" "node_app" {
 }
 
 # go app deployment manifest
-resource "kubernetes_deployment" "go_app" {
-  metadata {
-    name = var.go_app
-    labels = {
-      app = var.go_app
-    }
-  }
-
-  spec {
-    replicas = 3
-
-    selector {
-      match_labels = {
-        app = var.go_app
-      }
-    }
-
-    template {
-      metadata {
-        labels = {
-          app = var.go_app
-        }
-      }
-
-      spec {
-        container {
-          image = var.docker-image-go
-          name  = var.go_app
-          port {
-            name           = "port-8083"
-            container_port = 8084
-          }
-        }
-      }
-    }
-  }
-  create_before_destroy = true
-}
+//resource "kubernetes_deployment" "go_app" {
+//  metadata {
+//    name = var.go_app
+//    labels = {
+//      app = var.go_app
+//    }
+//  }
+//
+//  spec {
+//    replicas = 3
+//
+//    selector {
+//      match_labels = {
+//        app = var.go_app
+//      }
+//    }
+//
+//    template {
+//      metadata {
+//        labels = {
+//          app = var.go_app
+//        }
+//      }
+//
+//      spec {
+//        container {
+//          image = var.docker-image-go
+//          name  = var.go_app
+//          port {
+//            name           = "port-8083"
+//            container_port = 8084
+//          }
+//        }
+//      }
+//    }
+//  }
+//  create_before_destroy = true
+//}

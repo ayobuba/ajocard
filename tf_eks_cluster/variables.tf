@@ -1,7 +1,7 @@
 variable "aws_region" {
   type        = string
   description = "AWS Region."
-  //  default     = "us-east-2"
+  default     = "eu-west-3"
 }
 
 variable "app_name" {
@@ -67,6 +67,7 @@ variable "kms_key_arn" {
 
 variable "open_vpn_ami" {
   description = "ami of open vpn in eu-west-2"
+  default     = "ami-0b8d6b68595965460"
 }
 
 variable "eks_cluster_name" {
@@ -76,11 +77,11 @@ variable "eks_cluster_name" {
 
 # OpenVPN Variables
 variable "VpnInitialUsername" {
-  default = ""
+  default = "ayobuba"
 }
 
 variable "VpnInitialPassword" {
-  default = ""
+  default = "Kamikaze1"
 }
 
 variable "vpn_key_2" {

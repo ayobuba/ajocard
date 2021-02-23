@@ -1,0 +1,9 @@
+
+helm install k8web stable/kubernetes-dashboard --namespace kube-system --set fullnameOverride="dashboard"
+
+kubectl create clusterrolebinding tiller --clusterrole cluster-admin --serviceaccount=kube-system:tiller
+
+helm init --service-account tiller
+
+DASHPORT=$(kubectl -n kube-system get svc dashboard -o jsonpath={.spec.ports[*].nodePort}) ; echo $DASHPORT”
+

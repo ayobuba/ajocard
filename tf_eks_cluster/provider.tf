@@ -1,5 +1,5 @@
 provider "aws" {
-  region = var.aws_region
+  region     = var.aws_region
   access_key = var.access_key
   secret_key = var.secret_key
 }
@@ -15,18 +15,29 @@ terraform {
   required_version = "~> 0.14"
   backend "remote" {
     organization = "prennovate"
-    hostname = "app.terraform.io"
+    hostname     = "app.terraform.io"
     # Fill Workspace
     workspaces {
       name = "ajocard-iac-eks-cluster"
     }
   }
 }
+//
+//terraform {
+//  backend "remote" {
+//    hostname = "prenovate.scalr.io"
+//    organization = "env-ta3cdcbgqnk42ao"
+//
+//    workspaces {
+//      name = "ajocard-tf-eks-cluster"
+//    }
+//  }
+//}
 // ajocard-iac-kubernetes-app
 terraform {
   required_providers {
     aws = {
-      source = "hashicorp/aws"
+      source  = "hashicorp/aws"
       version = "~> 3.20"
     }
   }

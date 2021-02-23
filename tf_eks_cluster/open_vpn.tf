@@ -1,4 +1,4 @@
-//# OpenVPN EC2
+# OpenVPN EC2
 //resource "aws_autoscaling_group" "NodeGroup" {
 //  name                 = "NodeASGroup"
 //  max_size             = 1
@@ -19,7 +19,7 @@
 //    value               = "OpenVPN Server"
 //  }
 //}
-//
+
 //resource "aws_launch_configuration" "NodeLaunchConfig" {
 //  name          = "NodeLaunchConfig-${random_string.suffix.result}"
 //  image_id      = var.open_vpn_ami
@@ -40,14 +40,14 @@
 //  }
 //}
 //
-//
-//
+
+
 //resource "aws_security_group" "NodeSecurityGroup" {
 //  name        = "NodeSecurityGroup"
 //  description = "Security group for all nodes in the cluster"
 //  vpc_id      = module.vpc.vpc_id
 //}
-//
+
 //
 //
 //resource "aws_security_group_rule" "NodeSecurityGroupIngressTCP443" {
@@ -153,9 +153,11 @@
 //  path = "/openvpn/"
 //  role = aws_iam_role.NodeRole.id
 //}
-//
-//
-//
-//
-//
-//
+
+
+
+
+
+
+
+

@@ -1,0 +1,70 @@
+---
+
+terraform:
+  version: 0.14.5
+
+hooks:
+  startup:
+    - command: assume-role --role terraform
+      set_env: true
+
+modules:
+  - name: eks
+    path: tf_eks_cluster
+    deps:
+      - module: vpc
+    remote:
+      backend_config:
+        bucket: acme-terraform-states
+        key: "{{.aws_region}}/app-{{.environment}}.tfstate"
+        region: us-east-1
+    variables:
+      - name: region
+      - name: environment
+        values: [dev, prod]
+
+  - name: database
+    path: core/database
+    remote:
+      backend_config:
+        bucket: acme-terraform-states
+        key: "{{.aws_region}}/database-{{.environment}}.tfstate"
+        region: us-east-1
+    variables:
+      - name: region
+      - name: environment
+        values: [dev, prod]
+
+  - name: mgmt
+    path: core/mgmt
+    deps:
+      - module: vpc
+        variables:
+          environment: mgmt  # depends on vpc/mgmt
+    remote:
+      backend_config:
+        bucket: acme-terraform-states
+        key: "{{.aws_region}}/mgmt-{{.environment}}.tfstate"
+        region: us-east-1
+    variables:
+      - name: region
+
+  - name: users
+    path: core/users
+    remote:
+      backend_config:
+        bucket: acme-terraform-states
+        key: global/users
+        region: us-east-1
+
+  - name: vpc
+    path: core/vpc
+    remote:
+      backend_config:
+        bucket: acme-terraform-states
+        key: "{{.aws_region}}/vpc-{{.environment}}.tfstate"
+        region: us-east-1
+    variables:
+      - name: region
+      - name: environment
+        values: [mgmt, dev, prod]

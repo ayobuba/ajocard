@@ -44,7 +44,7 @@ module "eks" {
   source          = "terraform-aws-modules/eks/aws"
   version         = "13.2.1"
   cluster_name    = local.cluster_name
-  cluster_version = "1.18"
+  cluster_version = "1.19"
   subnets         = module.vpc.private_subnets
 
 
@@ -62,9 +62,11 @@ module "eks" {
   worker_groups = [
     {
       name                          = "node-group-1"
-      instance_type                 = "t2.micro"
+      instance_type                 = "t2.medium"
       additional_userdata           = "echo foo bar"
       asg_desired_capacity          = 1
+      asg_min_size                  = 1
+      asg_max_size                  = 2
       additional_security_group_ids = [aws_security_group.worker_group_mgmt_one.id]
       //key_name                      = var.KeyName
 
@@ -74,7 +76,10 @@ module "eks" {
       instance_type                 = "t2.micro"
       additional_userdata           = "echo foo bar"
       additional_security_group_ids = [aws_security_group.worker_group_mgmt_two.id]
-      asg_desired_capacity          = 1
+      asg_desired_capacity          = 2
+      asg_min_size                  = 3
+      asg_max_size                  = 5
+
       //key_name                      = var.KeyName
     },
   ]
@@ -98,14 +103,14 @@ resource "aws_security_group" "worker_group_mgmt_one" {
     ]
   }
 
-//  ingress {
-//    from_port       = 0
-//    protocol        = "-1"
-//    to_port         = 0
-//    security_groups = [aws_security_group.NodeSecurityGroup.id]
-//    cidr_blocks     = ["0.0.0.0/0"]
-//
-//  }
+  //  ingress {
+  //    from_port       = 0
+  //    protocol        = "-1"
+  //    to_port         = 0
+  //    security_groups = [aws_security_group.NodeSecurityGroup.id]
+  //    cidr_blocks     = ["0.0.0.0/0"]
+  //
+  //  }
 }
 
 resource "aws_security_group" "worker_group_mgmt_two" {
@@ -121,14 +126,14 @@ resource "aws_security_group" "worker_group_mgmt_two" {
       "192.168.0.0/16",
     ]
   }
-//  ingress {
-//    from_port       = 0
-//    protocol        = "-1"
-//    to_port         = 0
-//    security_groups = [aws_security_group.NodeSecurityGroup.id]
-//    cidr_blocks     = ["0.0.0.0/0"]
-//
-//  }
+  //  ingress {
+  //    from_port       = 0
+  //    protocol        = "-1"
+  //    to_port         = 0
+  //    security_groups = [aws_security_group.NodeSecurityGroup.id]
+  //    cidr_blocks     = ["0.0.0.0/0"]
+  //
+  //  }
 }
 
 resource "aws_security_group" "all_worker_mgmt" {
@@ -148,6 +153,15 @@ resource "aws_security_group" "all_worker_mgmt" {
   }
 }
 
+
+############################
+## Null Resource for EKS  ##
+############################
+resource "null_resource" "kubectl" {
+  provisioner "local-exec" {
+    command = "aws eks --region ${var.aws_region} update-kubeconfig --name ${local.cluster_name}"
+  }
+}
 
 
 //  terraform state rm 'module.eks.kubernetes_config_map.aws_auth[0]'

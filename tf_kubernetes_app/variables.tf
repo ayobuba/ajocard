@@ -7,6 +7,12 @@ variable "node_app" {
   default     = "node"
 }
 
+variable "docker-image-node" {
+  type        = string
+  description = "name of the docker image to deploy"
+  default     = "ayobuba/ajocard-node:latest"
+}
+
 variable "go_app" {
   type        = string
   description = "Name of application"
@@ -17,11 +23,7 @@ variable "zone" {
   default = "us-east1-d"
 }
 
-variable "docker-image-node" {
-  type        = string
-  description = "name of the docker image to deploy"
-  default     = "ayobuba/ajocard-node:latest"
-}
+
 
 variable "docker-image-go" {
   type        = string

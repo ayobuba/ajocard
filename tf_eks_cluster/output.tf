@@ -54,4 +54,7 @@ output "cluster-ca-cert" {
   value = data.aws_eks_cluster.cluster.certificate_authority.0.data
 }
 
+//output "load_balancer_endpoint" {
+//  value = kubernetes_service.node_app.metadata[0]
+//}
 

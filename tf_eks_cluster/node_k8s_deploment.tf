@@ -1,31 +1,53 @@
-//resource "kubernetes_deployment" "node_deployment" {
+//# node app deployment manifest
+//variable "node_app" {
+//  type        = string
+//  description = "Name of application"
+//  default     = "my-nginx"
+//}
+//
+//variable "docker-image-node" {
+//  type        = string
+//  description = "name of the docker image to deploy"
+//  default     = "ayobuba/ajocard-node:latest"
+//}
+//
+//resource "kubernetes_deployment" "node_app" {
 //  metadata {
-//    name = var.app
+//    name = var.node_app
 //    labels = {
-//      app = var.app
+//      app = var.node_app
 //    }
 //  }
-//  spec {
-//    replicas = 3
 //
+//  spec {
+//    replicas = 2
+//    min_ready_seconds = 1
 //    selector {
 //      match_labels = {
-//        app = var.app
+//        app = var.node_app
 //      }
 //    }
+//
 //    template {
 //      metadata {
 //        labels = {
-//          app = var.app
+//          app = var.node_app
 //        }
 //      }
+//
 //      spec {
 //        container {
-//          image = var.go-docker-image
-//          name  = var.app
+//          image = var.docker-image-node
+//          name  = var.node_app
 //          port {
 //            name           = "port-5000"
-//            container_port = 8083
+//            container_port = 5000
+//          }
+//          resources {
+//            limits {
+//              memory = "123Mi"
+//              cpu = "200m"
+//            }
 //          }
 //        }
 //      }
@@ -33,18 +55,20 @@
 //  }
 //}
 //
-//resource "kubernetes_service" "node_service" {
+//# node app service manifest
+//resource "kubernetes_service" "node_app" {
 //  metadata {
-//    name = var.app
+//    name = var.node_app
 //  }
 //  spec {
 //    selector = {
-//      app = kubernetes_deployment.go_deploment.metadata.0.labels.app
+//      app = kubernetes_deployment.node_app.metadata.0.labels.app
 //    }
 //    port {
 //      port        = 80
-//      target_port = 8083
+//      target_port = 5000
 //    }
+//
 //    type = "LoadBalancer"
 //  }
 //}
