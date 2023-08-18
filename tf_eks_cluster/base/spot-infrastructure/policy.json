@@ -1,0 +1,16 @@
+{
+  "Version": "2012-10-17",
+  "Id": "MyQueuePolicy",
+  "Statement": [{
+    "Effect": "Allow",
+    "Principal": {
+      "Service": ["events.amazonaws.com", "sqs.amazonaws.com"]
+    },
+    "Action": "sqs:SendMessage",
+    "Resource": [
+      "arn:aws:sqs:${AWS_REGION}:${ACCOUNT_ID}:${SQS_QUEUE_NAME}"
+    ]
+  }]
+}
+
+// https://oidc.eks.us-east-1.amazonaws.com/id/3AD1324D62BFD9E0843E0E41414B3358

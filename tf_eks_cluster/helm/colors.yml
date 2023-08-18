@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: playbox
+  namespace: playground
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: playbox
+  template:
+    metadata:
+      labels:
+        app: playbox
+    spec:
+      containers:
+        - name: playbox
+          image: busybox
+          ports:
+            - containerPort: 80
+

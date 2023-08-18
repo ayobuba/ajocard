@@ -1,41 +1,114 @@
-//variable "my_nginx" {
-//  default = "my-nginx"
+//resource "aws_security_group" "instance" {
+//  name = "tf-example-instance"
+//  ingress {
+//    from_port = 8080
+//    protocol = "tcp"
+//    to_port = 8080
+//    cidr_blocks = ["0.0.0.0/0"]
+//  }
 //}
-//resource "kubernetes_deployment" "nginx_deployemt" {
-//  metadata {
-//    name = var.my_nginx
-//    labels = {
-//      app = var.my_nginx
+//
+//resource "aws_launch_configuration" "example" {
+//  image_id = "ami-0443305dabd4be2bc "
+//  instance_type = "t2.nano"
+//  security_groups = [aws_security_group.instance.id]
+//  user_data = <<-EOF
+//                #!/bin/bash
+//                echo "Hello World" > index.html
+//                nohup busybox httpd -f -p 8080 &
+//                EOF
+//
+//}
+//
+//resource "aws_autoscaling_group" "example" {
+//  launch_configuration = aws_launch_configuration.example.name
+//  vpc_zone_identifier = [data.aws_subnet_ids.default.*.ids]
+//  target_group_arns = [aws_lb_target_group.asg.arn]
+//  health_check_type = "ELB"
+//  max_size = 1
+//  min_size = 10
+//  tag {
+//    key = "Name"
+//    propagate_at_launch = true
+//    value = "asg-example"
+//  }
+//}
+//
+//resource "aws_lb" "example" {
+//  name = "asg-example"
+//  load_balancer_type = "application"
+//  subnets = [data.aws_subnet_ids.default.*.ids]
+//  security_groups = [aws_security_group.alb.id]
+//}
+//
+//resource "aws_lb_listener" "http" {
+//  load_balancer_arn = aws_lb.example.arn
+//  port = 80
+//  protocol = "HTTP"
+//
+//  default_action {
+//    type = "fixed-response"
+//    fixed_response {
+//      content_type = "text/plain"
+//      message_body = "404: page not found"
+//      status_code = "404"
 //    }
 //  }
-//  spec {
-//    replicas = 2
-//    selector {
-//      match_labels = {
-//        app = var.my_nginx
-//      }
-//    }
-//    template {
-//      metadata {
-//        labels = {
-//          app = var.my_nginx
-//        }
-//      }
-//      spec {
-//        container {
-//          name = var.my_nginx
-//          image = "nginx:alpine"
-//          port {
-//            container_port = 80
-//          }
-//          resources {
-//            limits {
-//              memory = "123Mi"
-//              cpu = "200m"
-//            }
-//          }
-//        }
-//      }
+//
+//}
+//
+//resource "aws_security_group" "alb" {
+//  name = "tf-alb"
+//  ingress {
+//    cidr_blocks = ["0.0.0.0/0"]
+//    from_port = 80
+//    protocol = "tcp"
+//    to_port = 80
+//  }
+//  egress {
+//    from_port = 0
+//    protocol = "-1"
+//    to_port = 0
+//    cidr_blocks = ["0.0.0.0/0"]
+//  }
+//}
+//
+//variable "server_port" {
+//  default = "8080"
+//}
+//resource "aws_lb_target_group" "asg" {
+//  name = "asg-example"
+//  port = var.server_port
+//  protocol = "HTTP"
+//  vpc_id = data.aws_vpc.default.id
+//
+//  health_check {
+//    path = "/"
+//    protocol = "HTTP"
+//    matcher = "200"
+//    interval = 15
+//    timeout = 3
+//    healthy_threshold = 2
+//    unhealthy_threshold = 2
+//  }
+//}
+//
+//resource "aws_lb_listener_rule" "asg" {
+//  listener_arn = aws_lb_listener.http.arn
+//  priority = 100
+//
+//  condition {
+//    path_pattern {
+//      values = ["*"]
 //    }
 //  }
+//  action {
+//    type = "forward"
+//    target_group_arn = aws_lb_target_group.asg.arn
+//  }
+//
+//}
+//
+//output "alb_dns_name" {
+//  value = aws_lb.example.dns_name
 //}

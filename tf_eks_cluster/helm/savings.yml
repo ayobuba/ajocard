@@ -1,0 +1,203 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lendingservice
+  labels:
+    apps: lendingservice
+  namespace: emojivoto
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: lendingservice
+  template:
+    metadata:
+      labels:
+        component: lendingservice
+    spec:
+#      initContainers:
+#        - name: check-redis-ready
+#          image: busybox
+#          command:
+#            - /bin/sh
+#            - -c
+#            - >
+#              set -x;
+#              until ((printf "PING\r\n"; sleep 1) | nc redis 6379);
+#              do echo waiting for redis;
+#              sleep 2; done
+      containers:
+        - name: lendingservice
+          image: 313877844143.dkr.ecr.eu-west-1.amazonaws.com/lending-service-dev
+          imagePullPolicy: Always
+          resources:
+            limits:
+              memory: "1024Mi"
+            requests:
+              memory: "512Mi" #default 256Mi
+          command: ["/bin/sh"]
+          args: ["-c","node /var/lib/lendingservice/dist/main.js"]
+          ports:
+            - containerPort: 3000
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3000
+            initialDelaySeconds: 3
+            periodSeconds: 3
+          env:
+            - name: APP_NAME
+              value: "lendingservice"
+            - name: NODE_ENV
+              value: "production"
+            - name: LOG_LEVEL
+              value: "info"
+            - name: PORT
+              value: "3000"
+            - name: MAX_ADMIN_RECORDS_TO_BE_RETURNED
+              value: "50"
+            - name: LOAN_SKIPPED_DAYS
+              value: "0"
+            - name: LOAN_APPLICATION_FEE
+              value: "1000"
+            - name: TASK_PROCESSING_TIMEOUT
+              value: "900"
+            - name: NAMESPACE
+              value: "$NAMESPACE"
+            - name: MONGO_DB_URI
+              valueFrom:
+                secretKeyRef:
+                  name: lendingservice-env
+                  key: MONGO_DB_URI
+            - name: USER_SERVICE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: lendingservice-env
+                  key: USER_SERVICE_URL
+            - name: AUTH_SERVICE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: lendingservice-env
+                  key: AUTH_SERVICE_URL
+            - name: LOAN_DURATION
+              valueFrom:
+                secretKeyRef:
+                  name: lendingservice-env
+                  key: LOAN_DURATION
+            - name: LOAN_MONTHLY_LIMIT
+              valueFrom:
+                secretKeyRef:
+                  name: lendingservice-env
+                  key: LOAN_MONTHLY_LIMIT
+            - name: LOAN_PRE_START_DURATION
+              valueFrom:
+                secretKeyRef:
+                  name: lendingservice-env
+                  key: LOAN_PRE_START_DURATION
+            - name: WALLET_SERVICE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: lendingservice-env
+                  key: WALLET_SERVICE_URL
+            - name: LOAN_APPROVAL_FEE
+              valueFrom:
+                secretKeyRef:
+                  name: lendingservice-env
+                  key: LOAN_APPROVAL_FEE
+            - name: AWS_REGION
+              valueFrom:
+                secretKeyRef:
+                  name: lendingservice-env
+                  key: AWS_REGION
+            - name: SMS_SNS_TOPIC_ARN
+              valueFrom:
+                secretKeyRef:
+                  name: lendingservice-env
+                  key: SMS_SNS_TOPIC_ARN
+            - name: LOAN_COLLECTION_PIN
+              valueFrom:
+                secretKeyRef:
+                  name: lendingservice-env
+                  key: LOAN_COLLECTION_PIN
+            - name: REDIS_URI
+              valueFrom:
+                secretKeyRef:
+                  name: lendingservice-env
+                  key: REDIS_URI
+            - name: CARD_SERVICE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: lendingservice-env
+                  key: CARD_SERVICE_URL
+            - name: SLACK_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: lendingservice-env
+                  key: SLACK_TOKEN
+            - name: SLACK_REPORT_CHANNEL
+              valueFrom:
+                secretKeyRef:
+                  name: lendingservice-env
+                  key: SLACK_REPORT_CHANNEL
+            - name: SLACK_MFB_REPORT_CHANNEL
+              valueFrom:
+                secretKeyRef:
+                  name: lendingservice-env
+                  key: SLACK_MFB_REPORT_CHANNEL
+            - name: REPORTING_ENABLED
+              valueFrom:
+                secretKeyRef:
+                  name: lendingservice-env
+                  key: REPORTING_ENABLED
+            - name: NEWRELIC_LICENSE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: lendingservice-env
+                  key: NEWRELIC_LICENSE_KEY
+            - name: EXCLUDE_FROM_AUTO_COLLECTION
+              valueFrom:
+                secretKeyRef:
+                  name: lendingservice-env
+                  key: EXCLUDE_FROM_AUTO_COLLECTION
+            - name: SERVICE_ID
+              valueFrom:
+                secretKeyRef:
+                  name: lendingservice-env
+                  key: SERVICE_ID
+
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: lendingservice
+  annotations:
+    kubernetes.io/ingress.class: "$NLB" #nginx / prod-nginx / dev-nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+  labels:
+    app: lendingservice
+  namespace: emojivoto
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /lendingservice(/|$)(.*)
+            backend:
+              serviceName: lendingservice
+              servicePort: 4021
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lendingservice
+  labels:
+    app: lendingservice
+  namespace: emojivoto #default / staging / dev
+spec:
+  type: ClusterIP
+  selector:
+    component: lendingservice
+  ports:
+    - name: lendingservice
+      port: 4021
+      targetPort: 3000

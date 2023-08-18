@@ -1,15 +1,15 @@
 # random strings are used for naming the EKS cluster, VPC and other resources
 resource "random_string" "suffix" {
-  length  = 8
+  length  = 2
   special = false
 }
 
 ########################
 ## Setting up the VPC ##
 ########################
-module "vpc" {
+module "cpp_vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "2.64.0"
+  version = "3.2.0"
 
   name                 = "${var.app}-VPC"
   cidr                 = "10.0.0.0/16"
@@ -34,56 +34,9 @@ module "vpc" {
     "kubernetes.io/cluster/${local.cluster_name}" = "shared"
     "kubernetes.io/role/internal-elb"             = "1"
   }
+
 }
 
-
-################################
-## Setting up the EKS Cluster ##
-################################
-module "eks" {
-  source          = "terraform-aws-modules/eks/aws"
-  version         = "13.2.1"
-  cluster_name    = local.cluster_name
-  cluster_version = "1.19"
-  subnets         = module.vpc.private_subnets
-
-
-
-
-
-  tags = {
-    Environment = var.app_stage
-    GithubRepo  = "https://github.com/ayobuba/AjoCard"
-    GithubOrg   = "ayobuba"
-  }
-
-  vpc_id = module.vpc.vpc_id
-
-  worker_groups = [
-    {
-      name                          = "node-group-1"
-      instance_type                 = "t2.medium"
-      additional_userdata           = "echo foo bar"
-      asg_desired_capacity          = 1
-      asg_min_size                  = 1
-      asg_max_size                  = 2
-      additional_security_group_ids = [aws_security_group.worker_group_mgmt_one.id]
-      //key_name                      = var.KeyName
-
-    },
-    {
-      name                          = "node-group-2"
-      instance_type                 = "t2.micro"
-      additional_userdata           = "echo foo bar"
-      additional_security_group_ids = [aws_security_group.worker_group_mgmt_two.id]
-      asg_desired_capacity          = 2
-      asg_min_size                  = 3
-      asg_max_size                  = 5
-
-      //key_name                      = var.KeyName
-    },
-  ]
-}
 
 
 ############################
@@ -91,7 +44,7 @@ module "eks" {
 ############################
 resource "aws_security_group" "worker_group_mgmt_one" {
   name_prefix = "worker_group_mgmt_one"
-  vpc_id      = module.vpc.vpc_id
+  vpc_id      = module.cpp_vpc.vpc_id
 
   ingress {
     from_port = 22
@@ -103,19 +56,19 @@ resource "aws_security_group" "worker_group_mgmt_one" {
     ]
   }
 
-  //  ingress {
-  //    from_port       = 0
-  //    protocol        = "-1"
-  //    to_port         = 0
-  //    security_groups = [aws_security_group.NodeSecurityGroup.id]
-  //    cidr_blocks     = ["0.0.0.0/0"]
+  //    ingress {
+  //      from_port       = 0
+  //      protocol        = "-1"
+  //      to_port         = 0
+  //      security_groups = [aws_security_group.NodeSecurityGroup.id]
+  //      cidr_blocks     = ["0.0.0.0/0"]
   //
-  //  }
+  //    }
 }
 
 resource "aws_security_group" "worker_group_mgmt_two" {
   name_prefix = "worker_group_mgmt_two"
-  vpc_id      = module.vpc.vpc_id
+  vpc_id      = module.cpp_vpc.vpc_id
 
   ingress {
     from_port = 22
@@ -138,7 +91,7 @@ resource "aws_security_group" "worker_group_mgmt_two" {
 
 resource "aws_security_group" "all_worker_mgmt" {
   name_prefix = "all_worker_management"
-  vpc_id      = module.vpc.vpc_id
+  vpc_id      = module.cpp_vpc.vpc_id
 
   ingress {
     from_port = 22
@@ -154,14 +107,8 @@ resource "aws_security_group" "all_worker_mgmt" {
 }
 
 
-############################
-## Null Resource for EKS  ##
-############################
-resource "null_resource" "kubectl" {
-  provisioner "local-exec" {
-    command = "aws eks --region ${var.aws_region} update-kubeconfig --name ${local.cluster_name}"
-  }
-}
-
 
 //  terraform state rm 'module.eks.kubernetes_config_map.aws_auth[0]'
+// aws ecr get-login-password —-region eu-west-1  --profile ajocard | docker login —-username AWS —-password-stdin 313877844143.dkr.ecr.eu-west-1.amazonaws.com/ajocardengineering/user-user-service-dev
+
+//aws ecr get-login-password --region eu-west-1 --profile ajocard | docker login --username AWS --password-stdin 313877844143.dkr.ecr.eu-west-1.amazonaws.com/ajocardengineering/user-user-service-dev

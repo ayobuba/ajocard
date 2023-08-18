@@ -1,0 +1,92 @@
+image: golang:1.14-alpine3.11
+
+.deployment-script: &dep_script |
+  apk add gettext
+  echo $KUBE_TOKEN | base64 -d > ./kube_token
+  echo $KUBE_CA | base64 -d > ./kube_ca
+  kubectl config set-cluster $CLUSTER_NAME --server=$SERVER_URL --certificate-authority="$(pwd)/kube_ca"
+  kubectl config set-credentials $K8S_SA --token="$(cat ./kube_token)"
+  kubectl config set-context $K8S_SA --namespace=$NAMESPACE --cluster=$CLUSTER_NAME --user=$K8S_SA
+  kubectl config use-context $K8S_SA
+  export USER_SERVICE_HASH_RESULT=$(cat user_service_image_digest.txt | awk '{print $3}') #extract digest using awk utility
+  cat k8s/deployments.yml | envsubst | kubectl apply -f -
+
+definitions:
+  caches:
+    gobin: "${GOPATH}/bin"
+    vendor: "${IMPORT_PATH}/vendor"
+  steps:
+    - step: &Go-test
+        name: Static code Testing
+        script:
+          - source bitbucket-pipeline.sh
+          - make prep
+          - make test
+    - step: &Deploy-to-ECR
+        name: Deploy to ECR
+        image: atlassian/pipelines-awscli
+        services:
+          - docker
+        script:
+          - echo "build step"
+          # Before this,i created a repo on ECR via aws CLI (ajocardengineering/ajocard-wallet-service)
+          # aws ECR login
+          - echo "build step"
+          #- eval $(aws ecr get-login-password --region ${AWS_DEFAULT_REGION})
+          # - eval $(aws ecr get-login-password —-region ${AWS_DEFAULT_REGION}  | docker login —-username AWS —-password-stdin ${AWS_REGISTRY_URL}/user-user-service-$ENV)
+          - eval $(aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 313877844143.dkr.ecr.eu-west-1.amazonaws.com/ajocardengineering/user-user-service-dev)
+          # docker
+          - echo $REPO_NAME
+
+          # USER SERVICE API  building and pushing
+          - docker build -t ${BITBUCKET_REPO_OWNER}/user-user-service . -f cmd/user-service/Dockerfile
+          - docker tag ${BITBUCKET_REPO_OWNER}/user-user-service ${AWS_REGISTRY_URL}/user-user-service-$ENV
+          - docker push ${AWS_REGISTRY_URL}/user-user-service-$ENV > digest_user.txt
+          - sed -n '$'p digest_user.txt > user_service_image_digest.txt # get the last line of the response coming from ECR
+
+        artifacts: # artifacts for hash digest to be passed to other steps
+          - user_service_image_digest.txt
+
+pipelines:
+  pull-requests:
+    '**': # this runs as default for any branch not elsewhere defined
+      - step: *Go-test
+  branches:
+    development:
+      - step: *Go-test
+      - step:
+          <<: *Deploy-to-ECR
+          name: Deploy images to ECR (Development)
+          deployment: development
+      - step:
+          name: Deploy to Kubernetes (dev namespace)
+          image: atlassian/pipelines-kubectl
+          deployment: deploy-dev
+          script:
+            - *dep_script
+    staging:
+      - step: *Go-test
+      - step:
+          <<: *Deploy-to-ECR
+          name: Deploy images to ECR (staging)
+          deployment: staging
+      - step:
+          name: Deploy to Kubernetes (staging namespace)
+          image: atlassian/pipelines-kubectl
+          deployment: deploy-staging
+          script:
+            - *dep_script
+    master:
+      - step: *Go-test
+      - step:
+          <<: *Deploy-to-ECR
+          name: Deploy images to ECR (prod)
+          deployment: production
+      - step:
+          name: Deploy to Kubernetes (prod)
+          image: atlassian/pipelines-kubectl
+          deployment: deploy-prod
+          script:
+            - *dep_script
+options:
+  docker: true

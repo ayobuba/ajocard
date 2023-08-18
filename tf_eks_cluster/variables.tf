@@ -1,19 +1,19 @@
 variable "aws_region" {
   type        = string
   description = "AWS Region."
-  default     = "eu-west-3"
+  //  default     = "eu-central-1"
 }
 
 variable "app_name" {
   type        = string
-  description = "AjeCard Devops Challenge"
-  default     = "AjeCard-EKS"
+  description = "AjoCard Devops Challenge"
+  default     = "Shara-EKS"
 }
 
 variable "app" {
   type        = string
   description = "Application instance name (ie. honolulu, customer_name, department, etc.)."
-  default     = "ajocard"
+  default     = "shara"
 }
 
 variable "app_stage" {
@@ -47,10 +47,6 @@ variable "access_key" {
 variable "secret_key" {
   type        = string
   description = "Secret Access Key"
-}
-
-variable "region" {
-  default = "eu-west-2"
 }
 
 variable "instance_type" {
@@ -109,3 +105,32 @@ variable "go-docker-image" {
   description = "Name of Go Docker image to deploy"
   default     = "ayobuba/go-docker:latest"
 }
+
+variable "application_name" {
+  type        = string
+  description = "Application Name"
+  default     = "beacon"
+}
+
+variable "datadog_api_key" {
+  type        = string
+  description = "API key"
+  default     = "61de4bc50645c207156479502fce1077"
+}
+
+variable "datadog_app_key" {
+  type        = string
+  description = "Application key"
+  default     = "03e88b4522c891d543521f91ef35063e52ec0b02"
+}
+
+#variable "ppv" {
+#  type = map(object({
+#    cidr = string
+#    tags = map(string)
+#  }))
+#  default = {
+#    "key"
+#  }
+#}
+

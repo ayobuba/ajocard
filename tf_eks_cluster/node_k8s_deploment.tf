@@ -44,10 +44,10 @@
 //            container_port = 5000
 //          }
 //          resources {
-//            limits {
-//              memory = "123Mi"
-//              cpu = "200m"
-//            }
+////            limits {
+////              memory = "123Mi"
+////              cpu = "200m"
+////            }
 //          }
 //        }
 //      }

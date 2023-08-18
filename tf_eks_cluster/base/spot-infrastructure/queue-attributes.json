@@ -1,0 +1,4 @@
+{
+  "MessageRetentionPeriod": "300",
+  "Policy": "{ \"Version\": \"2012-10-17\", \"Id\": \"MyQueuePolicy\", \"Statement\": [{ \"Effect\": \"Allow\", \"Principal\": { \"Service\": [\"events.amazonaws.com\", \"sqs.amazonaws.com\"] }, \"Action\": \"sqs:SendMessage\", \"Resource\": [ \"arn:aws:sqs:::\" ] }]}"
+}

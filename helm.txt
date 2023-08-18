@@ -7,3 +7,22 @@ helm init --service-account tiller
 
 DASHPORT=$(kubectl -n kube-system get svc dashboard -o jsonpath={.spec.ports[*].nodePort}) ; echo $DASHPORT”
 
+aws eks delete-nodegroup
+databse URI
+ajocard_staging:Password1@tcp(ec2-54-246-27-134.eu-west-1.compute.amazonaws.com:4380)/ajocardwallet?charset=utf8mb4&parseTime=True&loc=Local
+
+ajocard_staging:Password1@tcp(54.73.14.150:4380)/ajocardwallet?charset=utf8mb4&parseTime=True&loc=Local
+
+MySQl URI
+ajocard_staging:Password1@tcp(ec2-54-246-27-134.eu-west-1.compute.amazonaws.com:4380)/ajocardwallet?charset=utf8mb4&parseTime=True&loc=Local
+ajocard_staging:Password1@tcp(ec2-54-246-27-134.eu-west-1.compute.amazonaws.com:4380)/ajocardwallet?charset=utf8mb4&parseTime=True&loc=Local
+ajocard_staging:Password1@tcp(54.73.14.150:4380)/ajocardwallet?charset=utf8mb4&parseTime=True&loc=Local
+
+root:P@55word~@tcp(54.73.14.150:4380)/ajocardwallet?charset=utf8mb4&parseTime=True&loc=Local
+kubectl scale deployment wallet -n staging --replicas=1
+kubectl scale deployment mpos -n staging --replicas=0
+
+MongoDB
+docker run --name bill_payments -d mongo:latest
+
+// docker login -u AWS -p $(aws ecr get-login-password --region eu-west-1) 313877844143.dkr.ecr.eu-west-1.amazonaws.com
